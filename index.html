@@ -1,5 +1,120 @@
-<div style="margin-bottom: 20px;">
-  <a href="../index.html" class="pill-button" style="text-decoration: none; display: inline-block;">
-    🍓 回到首頁 / 玩草莓數獨
-  </a>
-</div>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>草莓甜點數獨</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="background-orb orb-left"></div>
+    <div class="background-orb orb-right"></div>
+
+    <main class="game-card">
+      
+      <!-- 這裡就是連往 1A2B 的按鈕！ -->
+      <nav class="page-links" style="margin-top: 0; margin-bottom: 24px;">
+        <a href="./1a2b/" class="page-link">
+          🎮 點我切換遊戲：草莓 1A2B
+        </a>
+      </nav>
+
+      <!-- 狀態列 (難度、時間、錯誤) -->
+      <div class="status-strip">
+        <div class="status-pill">
+          <span>難度</span>
+          <strong id="difficulty-label">甜甜簡單</strong>
+        </div>
+        <div class="status-pill">
+          <span>時間</span>
+          <strong id="timer">00:00</strong>
+        </div>
+        <div class="status-pill">
+          <span>錯誤</span>
+          <strong id="mistakes">0</strong>
+        </div>
+      </div>
+
+      <!-- 工具列 (按鈕) -->
+      <div class="toolbar">
+        <div class="button-row" id="difficulty-buttons">
+          <button class="pill-button active" data-difficulty="easy">甜甜簡單</button>
+          <button class="pill-button" data-difficulty="medium">莓果普通</button>
+          <button class="pill-button" data-difficulty="hard">櫻花挑戰</button>
+        </div>
+        <div class="button-row">
+          <button class="soft-button" id="new-game">新遊戲</button>
+          <button class="soft-button" id="reset-board">重來</button>
+          <button class="soft-button" id="hint">提示</button>
+          <button class="soft-button" id="check-board">檢查</button>
+          <button class="soft-button" id="solve-board">解答</button>
+          <button class="soft-button toggle-button" id="notes-mode" aria-pressed="false">筆記模式</button>
+        </div>
+      </div>
+
+      <!-- 遊戲主區塊 -->
+      <div class="play-area">
+        <div class="board-wrap">
+          <div class="board-frame">
+            <div id="sudoku-board" class="sudoku-board"></div>
+          </div>
+        </div>
+
+        <!-- 側邊欄 (提示與數字鍵盤) -->
+        <div class="side-panel">
+          <div class="message-card">
+            <h2>遊玩提示</h2>
+            <p id="message">新的一盤準備好了，從你最想解的地方開始。</p>
+          </div>
+          <div class="numpad-card">
+            <h2>數字輸入</h2>
+            <div class="number-pad" id="number-pad">
+              <button class="number-button" data-number="1">1</button>
+              <button class="number-button" data-number="2">2</button>
+              <button class="number-button" data-number="3">3</button>
+              <button class="number-button" data-number="4">4</button>
+              <button class="number-button" data-number="5">5</button>
+              <button class="number-button" data-number="6">6</button>
+              <button class="number-button" data-number="7">7</button>
+              <button class="number-button" data-number="8">8</button>
+              <button class="number-button" data-number="9">9</button>
+              <button class="number-button clear-button" data-action="clear">清除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 慶祝過關彈窗 (內含可愛草莓蛋糕 SVG) -->
+    <div id="celebration-modal" class="celebration-modal" aria-hidden="true">
+      <div class="celebration-dialog">
+        <button id="close-celebration" class="modal-close">×</button>
+        <div class="celebration-sparkles">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="cake-display">
+          <svg class="cake-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="60" cy="100" rx="45" ry="10" fill="#ffd6e6"/>
+            <path d="M25 60 L95 60 L90 95 L30 95 Z" fill="#fff4f8" stroke="#f1a9c2" stroke-width="2"/>
+            <path d="M28 75 L92 75" stroke="#ef6ea4" stroke-width="4" stroke-linecap="round"/>
+            <path d="M20 60 Q 30 50 40 60 Q 50 50 60 60 Q 70 50 80 60 Q 90 50 100 60 Q 95 70 80 70 Q 60 70 40 70 Q 25 70 20 60" fill="#ffffff" stroke="#f1a9c2" stroke-width="2"/>
+            <path d="M50 45 C 50 25, 70 25, 70 45 C 70 60, 60 65, 60 65 C 60 65, 50 60, 50 45 Z" fill="#ef6ea4"/>
+            <path d="M55 35 Q 60 25 65 35 Q 60 30 55 35" fill="#9c6581"/>
+            <circle cx="60" cy="45" r="1" fill="#fff"/>
+            <circle cx="55" cy="50" r="1" fill="#fff"/>
+            <circle cx="65" cy="50" r="1" fill="#fff"/>
+            <circle cx="60" cy="55" r="1" fill="#fff"/>
+          </svg>
+        </div>
+        <p class="celebration-badge">VICTORY!</p>
+        <h2>大功告成！</h2>
+        <p id="celebration-copy" class="celebration-copy">你用 00:00 完成這盤草莓數獨，送你一塊草莓蛋糕。</p>
+        <button id="celebration-new-game" class="pill-button active celebration-button">再來一盤</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
