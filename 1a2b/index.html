@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>草莓 1A2B 猜數字</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="background-orb orb-left"></div>
+    <div class="background-orb orb-right"></div>
+    
+    <main class="game-card">
+      <header class="hero">
+        <p class="eyebrow">Classic Game</p>
+        <h1>草莓 1A2B</h1>
+        <p class="hero-copy">猜出 4 個不重複的數字。A 表示數字對且位置對，B 表示數字對但位置錯。</p>
+      </header>
+
+      <div class="status-strip">
+        <div class="status-pill">
+          <span>猜測次數</span>
+          <strong id="attempts">0</strong>
+        </div>
+        <div class="message-card">
+          <p id="message">遊戲已準備好，請輸入你的第一個猜測！</p>
+        </div>
+      </div>
+
+      <div class="play-area">
+        <div class="input-section">
+          <input type="text" id="guess-input" maxlength="4" placeholder="輸入4個不重複數字" autocomplete="off">
+          <div class="button-row">
+            <button id="submit-btn" class="pill-button active">送出猜測</button>
+            <button id="restart-btn" class="pill-button">重新開始</button>
+          </div>
+        </div>
+
+        <div class="history-section">
+          <div class="board-frame">
+            <ul id="history-list" class="history-list">
+              <!-- 猜測紀錄會產生在這裡 -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 慶祝彈出視窗 -->
+    <div id="celebration-modal" class="celebration-modal" aria-hidden="true">
+      <div class="celebration-dialog">
+        <button id="close-celebration" class="modal-close">×</button>
+        <p class="celebration-badge">VICTORY!</p>
+        <h2>4A0B 答對了！</h2>
+        <p id="celebration-copy" class="celebration-copy">太厲害了，送你一塊草莓蛋糕！</p>
+        <button id="celebration-new-game" class="pill-button active celebration-button">再來一局</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
