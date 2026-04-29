@@ -1,0 +1,166 @@
+<svg width="1200" height="1500" viewBox="0 0 1200 1500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="90" y1="60" x2="1110" y2="1440" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8FB" />
+      <stop offset="0.5" stop-color="#FFEAF3" />
+      <stop offset="1" stop-color="#FFDDEA" />
+    </linearGradient>
+    <radialGradient id="orbA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(170 150) rotate(90) scale(260)">
+      <stop stop-color="#FFCFE2" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#FFCFE2" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="orbB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1030 1220) rotate(90) scale(320)">
+      <stop stop-color="#FFBCD4" stop-opacity="0.8" />
+      <stop offset="1" stop-color="#FFBCD4" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="card" x1="600" y1="80" x2="600" y2="1420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="rgba(255,255,255,0.78)" />
+      <stop offset="1" stop-color="#FFF1F7" />
+    </linearGradient>
+    <linearGradient id="pill" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFF7FA" />
+      <stop offset="1" stop-color="#FFDDE9" />
+    </linearGradient>
+    <linearGradient id="pillActive" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FF90BB" />
+      <stop offset="1" stop-color="#EF6EA4" />
+    </linearGradient>
+    <linearGradient id="boardFrame" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#FFE2ED" stop-opacity="0.92" />
+    </linearGradient>
+    <linearGradient id="overlay" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#7A3554" stop-opacity="0.34" />
+      <stop offset="1" stop-color="#7A3554" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="modalBg" x1="600" y1="360" x2="600" y2="1020" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDFE" />
+      <stop offset="1" stop-color="#FFE5EF" />
+    </linearGradient>
+    <linearGradient id="buttonStrong" x1="420" y1="0" x2="780" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8CB8" />
+      <stop offset="1" stop-color="#EF6EA4" />
+    </linearGradient>
+    <filter id="cardShadow" x="10" y="20" width="1180" height="1460" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="22" stdDeviation="30" flood-color="#C97699" flood-opacity="0.22" />
+    </filter>
+    <filter id="modalShadow" x="250" y="250" width="700" height="900" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="26" stdDeviation="40" flood-color="#76304F" flood-opacity="0.28" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="1500" fill="url(#bg)" />
+  <circle cx="170" cy="150" r="260" fill="url(#orbA)" />
+  <circle cx="1030" cy="1220" r="320" fill="url(#orbB)" />
+
+  <g filter="url(#cardShadow)">
+    <rect x="40" y="40" width="1120" height="1420" rx="42" fill="url(#card)" stroke="rgba(255,255,255,0.85)" />
+  </g>
+
+  <text x="86" y="120" fill="#EF6EA4" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="24" font-weight="700" letter-spacing="6">PINK SUDOKU</text>
+  <text x="86" y="196" fill="#6F3553" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="64" font-weight="800">草莓數獨樂園</text>
+  <text x="86" y="250" fill="#9C6581" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="28">一邊解題，一邊待在草莓奶霜色的小宇宙裡。完成時會收到甜甜獎勵。</text>
+
+  <g font-family="Trebuchet MS, Segoe UI, sans-serif">
+    <rect x="86" y="300" width="305" height="90" rx="28" fill="rgba(255,255,255,0.7)" stroke="rgba(255,255,255,0.9)" />
+    <text x="116" y="352" fill="#9C6581" font-size="26">難度</text>
+    <text x="246" y="352" fill="#6F3553" font-size="34" font-weight="700">甜甜簡單</text>
+
+    <rect x="408" y="300" width="305" height="90" rx="28" fill="rgba(255,255,255,0.7)" stroke="rgba(255,255,255,0.9)" />
+    <text x="438" y="352" fill="#9C6581" font-size="26">時間</text>
+    <text x="586" y="352" fill="#6F3553" font-size="34" font-weight="700">02:05</text>
+
+    <rect x="730" y="300" width="305" height="90" rx="28" fill="rgba(255,255,255,0.7)" stroke="rgba(255,255,255,0.9)" />
+    <text x="760" y="352" fill="#9C6581" font-size="26">錯誤</text>
+    <text x="984" y="352" fill="#6F3553" font-size="34" font-weight="700">0</text>
+  </g>
+
+  <g font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="28" font-weight="700">
+    <rect x="86" y="430" width="170" height="72" rx="36" fill="url(#pillActive)" />
+    <text x="170" y="476" text-anchor="middle" fill="white">甜甜簡單</text>
+
+    <rect x="274" y="430" width="170" height="72" rx="36" fill="rgba(255,255,255,0.8)" stroke="#E6B9CC" />
+    <text x="359" y="476" text-anchor="middle" fill="#6F3553">莓果普通</text>
+
+    <rect x="462" y="430" width="170" height="72" rx="36" fill="rgba(255,255,255,0.8)" stroke="#E6B9CC" />
+    <text x="547" y="476" text-anchor="middle" fill="#6F3553">櫻花挑戰</text>
+  </g>
+
+  <g>
+    <rect x="130" y="560" width="690" height="690" rx="34" fill="url(#boardFrame)" stroke="rgba(255,255,255,0.9)" />
+    <rect x="170" y="600" width="610" height="610" rx="26" fill="rgba(255,255,255,0.86)" stroke="#DB7FA5" stroke-width="4" />
+
+    <g stroke="#CFA2B8" stroke-width="1.6">
+      <path d="M237.8 600V1210M305.6 600V1210M373.4 600V1210M441.2 600V1210M509 600V1210M576.8 600V1210M644.6 600V1210M712.4 600V1210" />
+      <path d="M170 667.8H780M170 735.6H780M170 803.4H780M170 871.2H780M170 939H780M170 1006.8H780M170 1074.6H780M170 1142.4H780" />
+    </g>
+    <g stroke="#DB7FA5" stroke-width="4">
+      <path d="M373.4 600V1210M576.8 600V1210" />
+      <path d="M170 803.4H780M170 1006.8H780" />
+    </g>
+
+    <g fill="#8A355D" font-family="Consolas, Menlo, monospace" font-size="28" font-weight="700">
+      <text x="208" y="645">1  2  3   4  5  6   7  8  9</text>
+      <text x="208" y="713">4  5  6   7  8  9   1  2  3</text>
+      <text x="208" y="781">7  8  9   1  2  3   4  5  6</text>
+      <text x="208" y="849">2  3  4   5  6  7   8  9  1</text>
+      <text x="208" y="917">5  6  7   8  9  1   2  3  4</text>
+      <text x="208" y="985">8  9  1   2  3  4   5  6  7</text>
+      <text x="208" y="1053">3  4  5   6  7  8   9  1  2</text>
+      <text x="208" y="1121">6  7  8   9  1  2   3  4  5</text>
+      <text x="208" y="1189">9  1  2   3  4  5   6  7  8</text>
+    </g>
+  </g>
+
+  <rect width="1200" height="1500" fill="url(#overlay)" />
+
+  <g filter="url(#modalShadow)">
+    <rect x="320" y="310" width="560" height="740" rx="40" fill="url(#modalBg)" stroke="rgba(255,255,255,0.88)" />
+  </g>
+
+  <circle cx="825" cy="362" r="24" fill="rgba(255,255,255,0.82)" stroke="#E1A2BC" />
+  <text x="825" y="371" text-anchor="middle" fill="#9A4D73" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="28" font-weight="700">×</text>
+
+  <g>
+    <rect x="366" y="360" width="18" height="18" rx="4" transform="rotate(45 366 360)" fill="url(#buttonStrong)" />
+    <rect x="600" y="340" width="12" height="12" rx="3" transform="rotate(45 600 340)" fill="#FFD877" />
+    <rect x="806" y="372" width="18" height="18" rx="4" transform="rotate(45 806 372)" fill="url(#buttonStrong)" />
+  </g>
+
+  <g transform="translate(430 410)">
+    <ellipse cx="150" cy="278" rx="118" ry="20" fill="#F7BAD0" />
+    <path d="M84 128C84 109 99 94 118 94H182C201 94 216 109 216 128V190C216 209 201 224 182 224H118C99 224 84 209 84 190V128Z" fill="#FFD6E4" />
+    <path d="M102 144C102 137 108 132 115 132H185C192 132 198 137 198 144V184C198 191 192 196 185 196H115C108 196 102 191 102 184V144Z" fill="#FFF0A8" />
+    <path d="M84 128C89 119 95 112 102 112C109 112 113 120 120 120C128 120 131 111 139 111C146 111 150 121 157 121C165 121 169 111 177 111C185 111 189 120 196 120C202 120 207 114 216 104V128H84Z" fill="#FFF9FD" />
+    <path d="M102 196H198V208C198 214 193 218 187 218H113C107 218 102 214 102 208V196Z" fill="#FFB7CC" />
+    <g>
+      <ellipse cx="112" cy="110" rx="16" ry="14" fill="#FF6B98" />
+      <path d="M112 94C107 91 103 88 100 82C107 82 111 85 114 89C117 85 121 82 128 82C125 88 121 91 112 94Z" fill="#7CBF73" />
+      <circle cx="106" cy="109" r="2" fill="#FFF5B8" />
+      <circle cx="114" cy="105" r="2" fill="#FFF5B8" />
+      <circle cx="118" cy="112" r="2" fill="#FFF5B8" />
+    </g>
+    <g>
+      <ellipse cx="150" cy="90" rx="19" ry="17" fill="#FF6B98" />
+      <path d="M150 72C144 68 139 64 136 57C143 57 149 60 152 65C156 60 162 57 169 57C165 64 161 68 150 72Z" fill="#7CBF73" />
+      <circle cx="143" cy="89" r="2" fill="#FFF5B8" />
+      <circle cx="152" cy="84" r="2" fill="#FFF5B8" />
+      <circle cx="156" cy="93" r="2" fill="#FFF5B8" />
+    </g>
+    <g>
+      <ellipse cx="188" cy="110" rx="16" ry="14" fill="#FF6B98" />
+      <path d="M188 94C183 91 179 88 176 82C183 82 187 85 190 89C193 85 197 82 204 82C201 88 197 91 188 94Z" fill="#7CBF73" />
+      <circle cx="182" cy="109" r="2" fill="#FFF5B8" />
+      <circle cx="190" cy="105" r="2" fill="#FFF5B8" />
+      <circle cx="194" cy="112" r="2" fill="#FFF5B8" />
+    </g>
+    <path d="M66 270C84 263 101 259 124 257C138 256 161 256 176 257C199 259 217 263 232 270" stroke="#FFF9FD" stroke-width="7" stroke-linecap="round" />
+  </g>
+
+  <text x="600" y="760" text-anchor="middle" fill="#EF6EA4" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="20" font-weight="700" letter-spacing="5">SWEET REWARD</text>
+  <text x="600" y="832" text-anchor="middle" fill="#7F294F" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="72" font-weight="800">大功告成</text>
+  <text x="600" y="892" text-anchor="middle" fill="#9C6581" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="28">你用 02:05 完成這盤草莓數獨，送你一塊草莓蛋糕。</text>
+
+  <rect x="430" y="940" width="340" height="78" rx="24" fill="url(#buttonStrong)" />
+  <text x="600" y="990" text-anchor="middle" fill="white" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="32" font-weight="700">再玩一局</text>
+</svg>
