@@ -1,215 +1,64 @@
-const boardElement = document.getElementById("sudoku-board");
+const attemptCountElement = document.getElementById("attempt-count");
 const timerElement = document.getElementById("timer");
-const mistakesElement = document.getElementById("mistakes");
+const bestScoreElement = document.getElementById("best-score");
+const guessInput = document.getElementById("guess-input");
+const historyList = document.getElementById("history-list");
 const messageElement = document.getElementById("message");
-const difficultyLabel = document.getElementById("difficulty-label");
-const notesModeButton = document.getElementById("notes-mode");
+const answerMaskElement = document.getElementById("answer-mask");
 const celebrationModal = document.getElementById("celebration-modal");
 const celebrationCopy = document.getElementById("celebration-copy");
-const closeCelebrationButton = document.getElementById("close-celebration");
-const celebrationNewGameButton = document.getElementById("celebration-new-game");
 
-const DIFFICULTIES = {
-  easy: { label: "甜甜簡單", holes: 38 },
-  medium: { label: "莓果普通", holes: 46 },
-  hard: { label: "櫻花挑戰", holes: 54 },
-};
+const BEST_SCORE_KEY = "strawberry-1a2b-best-score";
 
 const state = {
-  difficulty: "easy",
-  puzzle: [],
-  solution: [],
-  board: [],
-  notes: createEmptyNotes(),
-  selected: null,
-  mistakes: 0,
-  notesMode: false,
+  answer: [],
+  history: [],
   timerSeconds: 0,
   timerId: null,
-  flashCell: null,
-  isComplete: false,
+  isSolved: false,
 };
-
-function createEmptyBoard() {
-  return Array.from({ length: 9 }, () => Array(9).fill(0));
-}
-
-function createEmptyNotes() {
-  return Array.from({ length: 9 }, () =>
-    Array.from({ length: 9 }, () => new Set())
-  );
-}
-
-function cloneBoard(board) {
-  return board.map((row) => [...row]);
-}
-
-function shuffle(values) {
-  const result = [...values];
-  for (let i = result.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
-
-function isPlacementValid(board, row, col, value) {
-  for (let index = 0; index < 9; index += 1) {
-    if (board[row][index] === value || board[index][col] === value) {
-      return false;
-    }
-  }
-
-  const boxRow = Math.floor(row / 3) * 3;
-  const boxCol = Math.floor(col / 3) * 3;
-
-  for (let r = boxRow; r < boxRow + 3; r += 1) {
-    for (let c = boxCol; c < boxCol + 3; c += 1) {
-      if (board[r][c] === value) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-function getCandidates(board, row, col) {
-  if (board[row][col] !== 0) {
-    return [];
-  }
-
-  const candidates = [];
-  for (let value = 1; value <= 9; value += 1) {
-    if (isPlacementValid(board, row, col, value)) {
-      candidates.push(value);
-    }
-  }
-  return candidates;
-}
-
-function findBestEmptyCell(board) {
-  let best = null;
-
-  for (let row = 0; row < 9; row += 1) {
-    for (let col = 0; col < 9; col += 1) {
-      if (board[row][col] !== 0) {
-        continue;
-      }
-
-      const candidates = getCandidates(board, row, col);
-      if (candidates.length === 0) {
-        return { row, col, candidates };
-      }
-
-      if (!best || candidates.length < best.candidates.length) {
-        best = { row, col, candidates };
-      }
-    }
-  }
-
-  return best;
-}
-
-function fillBoard(board) {
-  const next = findBestEmptyCell(board);
-  if (!next) {
-    return true;
-  }
-
-  const { row, col, candidates } = next;
-  for (const value of shuffle(candidates)) {
-    board[row][col] = value;
-    if (fillBoard(board)) {
-      return true;
-    }
-  }
-
-  board[row][col] = 0;
-  return false;
-}
-
-function countSolutions(board, limit = 2) {
-  let count = 0;
-
-  function search() {
-    if (count >= limit) {
-      return;
-    }
-
-    const next = findBestEmptyCell(board);
-    if (!next) {
-      count += 1;
-      return;
-    }
-
-    const { row, col, candidates } = next;
-    for (const value of candidates) {
-      board[row][col] = value;
-      search();
-      board[row][col] = 0;
-      if (count >= limit) {
-        return;
-      }
-    }
-  }
-
-  search();
-  return count;
-}
-
-function generatePuzzle(holeTarget) {
-  const solution = createEmptyBoard();
-  fillBoard(solution);
-
-  const puzzle = cloneBoard(solution);
-  const positions = shuffle(Array.from({ length: 81 }, (_, index) => index));
-  let removed = 0;
-
-  // 移除數字時持續檢查唯一解，讓遊戲體驗穩定。
-  for (const position of positions) {
-    if (removed >= holeTarget) {
-      break;
-    }
-
-    const row = Math.floor(position / 9);
-    const col = position % 9;
-    const backup = puzzle[row][col];
-    puzzle[row][col] = 0;
-
-    const probe = cloneBoard(puzzle);
-    if (countSolutions(probe, 2) !== 1) {
-      puzzle[row][col] = backup;
-      continue;
-    }
-
-    removed += 1;
-  }
-
-  return { puzzle, solution };
-}
-
-function buildGame(difficultyKey) {
-  const { holes } = DIFFICULTIES[difficultyKey];
-  let result = null;
-
-  for (let attempt = 0; attempt < 4; attempt += 1) {
-    const generated = generatePuzzle(holes);
-    const emptyCount = generated.puzzle.flat().filter((value) => value === 0).length;
-
-    if (emptyCount >= holes - 2) {
-      result = generated;
-      break;
-    }
-  }
-
-  return result || generatePuzzle(holes);
-}
 
 function formatTime(totalSeconds) {
   const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
   const seconds = String(totalSeconds % 60).padStart(2, "0");
   return `${minutes}:${seconds}`;
+}
+
+function setMessage(text) {
+  messageElement.textContent = text;
+}
+
+function generateAnswer() {
+  const digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  const firstDigit = digits.splice(Math.floor(Math.random() * digits.length), 1)[0];
+  const tailPool = [...digits, "0"];
+  const answer = [firstDigit];
+
+  while (answer.length < 4) {
+    const index = Math.floor(Math.random() * tailPool.length);
+    answer.push(tailPool.splice(index, 1)[0]);
+  }
+
+  return answer;
+}
+
+function isValidGuess(guess) {
+  return /^\d{4}$/.test(guess) && guess[0] !== "0" && new Set(guess).size === 4;
+}
+
+function scoreGuess(guess, answer) {
+  let a = 0;
+  let b = 0;
+
+  for (let index = 0; index < guess.length; index += 1) {
+    if (guess[index] === answer[index]) {
+      a += 1;
+    } else if (answer.includes(guess[index])) {
+      b += 1;
+    }
+  }
+
+  return { a, b };
 }
 
 function clearTimer() {
@@ -227,13 +76,81 @@ function startTimer() {
   }, 1000);
 }
 
-function setMessage(text) {
-  messageElement.textContent = text;
+function readBestScore() {
+  try {
+    return window.localStorage.getItem(BEST_SCORE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeBestScore(value) {
+  try {
+    window.localStorage.setItem(BEST_SCORE_KEY, value);
+  } catch {
+    // localStorage 不可用時，直接略過最佳紀錄保存。
+  }
+}
+
+function refreshBestScore() {
+  const best = readBestScore();
+  bestScoreElement.textContent = best || "未記錄";
+}
+
+function refreshStatus() {
+  attemptCountElement.textContent = String(state.history.length);
+  timerElement.textContent = formatTime(state.timerSeconds);
+  refreshBestScore();
+}
+
+function renderHistory() {
+  historyList.innerHTML = "";
+
+  if (state.history.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty-state";
+    empty.textContent = "還沒有猜測紀錄，來試第一組數字吧。";
+    historyList.appendChild(empty);
+    return;
+  }
+
+  state.history
+    .slice()
+    .reverse()
+    .forEach((entry) => {
+      const item = document.createElement("article");
+      item.className = "history-item";
+
+      const order = document.createElement("div");
+      order.className = "history-item-order";
+      order.textContent = `#${entry.order}`;
+
+      const guessWrap = document.createElement("div");
+      const guess = document.createElement("div");
+      guess.className = "history-item-guess";
+      guess.textContent = entry.guess;
+
+      const meta = document.createElement("div");
+      meta.className = "history-item-meta";
+      meta.textContent = entry.isSolved ? "猜中了" : "再縮小一點範圍";
+
+      guessWrap.appendChild(guess);
+      guessWrap.appendChild(meta);
+
+      const score = document.createElement("div");
+      score.className = "history-item-score";
+      score.textContent = `${entry.a}A${entry.b}B`;
+
+      item.appendChild(order);
+      item.appendChild(guessWrap);
+      item.appendChild(score);
+      historyList.appendChild(item);
+    });
 }
 
 function showCelebration() {
   celebrationCopy.textContent =
-    `你用 ${formatTime(state.timerSeconds)} 完成這盤草莓數獨，送你一塊草莓蛋糕。`;
+    `你用 ${state.history.length} 次、花了 ${formatTime(state.timerSeconds)} 猜中這組草莓密碼。`;
   celebrationModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
 }
@@ -243,402 +160,110 @@ function hideCelebration() {
   document.body.classList.remove("modal-open");
 }
 
-function showCelebrationPreview() {
-  if (window.location.hash !== "#celebration-preview") {
+function revealAnswer() {
+  answerMaskElement.textContent = `答案：${state.answer.join("")}`;
+}
+
+function maybeSaveBestScore() {
+  const current = `${state.history.length} 次`;
+  const stored = readBestScore();
+
+  if (!stored) {
+    writeBestScore(current);
     return;
   }
 
-  state.board = cloneBoard(state.solution);
-  state.notes = createEmptyNotes();
-  state.selected = null;
-  state.mistakes = 0;
-  state.timerSeconds = 125;
-  state.flashCell = null;
-  state.isComplete = true;
+  const storedValue = Number.parseInt(stored, 10);
+  if (Number.isNaN(storedValue) || state.history.length < storedValue) {
+    writeBestScore(current);
+  }
+}
+
+function handleSolvedGuess() {
+  state.isSolved = true;
   clearTimer();
+  revealAnswer();
+  maybeSaveBestScore();
   refreshStatus();
-  renderBoard();
-  setMessage(`大功告成。你用 ${formatTime(state.timerSeconds)} 解開這盤草莓數獨！`);
+  setMessage("大功告成，你猜中這組 1A2B 了。");
   showCelebration();
 }
 
-function isFixedCell(row, col) {
-  return state.puzzle[row][col] !== 0;
-}
+function submitGuess() {
+  const guess = guessInput.value.trim();
 
-function isRelatedCell(row, col, selected) {
-  if (!selected) {
-    return false;
-  }
-
-  const sameRow = row === selected.row;
-  const sameCol = col === selected.col;
-  const sameBox =
-    Math.floor(row / 3) === Math.floor(selected.row / 3) &&
-    Math.floor(col / 3) === Math.floor(selected.col / 3);
-
-  return sameRow || sameCol || sameBox;
-}
-
-function renderBoard() {
-  const selectedValue = state.selected
-    ? state.board[state.selected.row][state.selected.col]
-    : 0;
-
-  boardElement.innerHTML = "";
-
-  for (let row = 0; row < 9; row += 1) {
-    for (let col = 0; col < 9; col += 1) {
-      const cell = document.createElement("button");
-      const value = state.board[row][col];
-
-      cell.type = "button";
-      cell.className = "cell";
-      cell.dataset.row = String(row);
-      cell.dataset.col = String(col);
-      cell.setAttribute("aria-label", `第 ${row + 1} 列，第 ${col + 1} 欄`);
-
-      if (isFixedCell(row, col)) {
-        cell.classList.add("fixed");
-      }
-
-      if (isRelatedCell(row, col, state.selected)) {
-        cell.classList.add("related");
-      }
-
-      if (selectedValue && value === selectedValue) {
-        cell.classList.add("same-number");
-      }
-
-      if (state.selected && state.selected.row === row && state.selected.col === col) {
-        cell.classList.add("selected");
-      }
-
-      if (state.flashCell && state.flashCell.row === row && state.flashCell.col === col) {
-        cell.classList.add("flash-error");
-      }
-
-      if (value !== 0) {
-        cell.textContent = String(value);
-      } else {
-        const notes = state.notes[row][col];
-        if (notes.size > 0) {
-          const noteGrid = document.createElement("div");
-          noteGrid.className = "notes-grid";
-
-          for (let noteValue = 1; noteValue <= 9; noteValue += 1) {
-            const note = document.createElement("span");
-            note.className = "note";
-            note.textContent = notes.has(noteValue) ? String(noteValue) : "";
-            noteGrid.appendChild(note);
-          }
-
-          cell.appendChild(noteGrid);
-        }
-      }
-
-      boardElement.appendChild(cell);
-    }
-  }
-}
-
-function refreshStatus() {
-  timerElement.textContent = formatTime(state.timerSeconds);
-  mistakesElement.textContent = String(state.mistakes);
-  difficultyLabel.textContent = DIFFICULTIES[state.difficulty].label;
-  notesModeButton.setAttribute("aria-pressed", String(state.notesMode));
-}
-
-function selectCell(row, col) {
-  state.selected = { row, col };
-  renderBoard();
-}
-
-function clearNotes(row, col) {
-  state.notes[row][col].clear();
-}
-
-function removePlacedValueFromNotes(row, col, value) {
-  for (let index = 0; index < 9; index += 1) {
-    state.notes[row][index].delete(value);
-    state.notes[index][col].delete(value);
-  }
-
-  const boxRow = Math.floor(row / 3) * 3;
-  const boxCol = Math.floor(col / 3) * 3;
-  for (let r = boxRow; r < boxRow + 3; r += 1) {
-    for (let c = boxCol; c < boxCol + 3; c += 1) {
-      state.notes[r][c].delete(value);
-    }
-  }
-}
-
-function flashError(row, col) {
-  state.flashCell = { row, col };
-  renderBoard();
-  window.setTimeout(() => {
-    state.flashCell = null;
-    renderBoard();
-  }, 280);
-}
-
-function checkWin() {
-  const solved = state.board.every((row, rowIndex) =>
-    row.every((value, colIndex) => value === state.solution[rowIndex][colIndex])
-  );
-
-  if (!solved) {
-    return false;
-  }
-
-  if (state.isComplete) {
-    return true;
-  }
-
-  state.isComplete = true;
-  clearTimer();
-  setMessage(`大功告成。你用 ${formatTime(state.timerSeconds)} 解開這盤草莓數獨！`);
-  showCelebration();
-  renderBoard();
-  return true;
-}
-
-function toggleNote(value) {
-  if (!state.selected) {
-    setMessage("先選一格空白格子，再寫筆記。");
+  if (state.isSolved) {
+    setMessage("這局已經完成了，按新遊戲再來一輪吧。");
     return;
   }
 
-  const { row, col } = state.selected;
-  if (isFixedCell(row, col) || state.board[row][col] !== 0) {
-    setMessage("筆記只能放在還沒填數字的格子。");
+  if (!isValidGuess(guess)) {
+    setMessage("請輸入 4 位不重複數字，而且第一位不能是 0。");
     return;
   }
 
-  const noteSet = state.notes[row][col];
-  if (noteSet.has(value)) {
-    noteSet.delete(value);
-  } else {
-    noteSet.add(value);
-  }
+  const { a, b } = scoreGuess(guess, state.answer);
+  const entry = {
+    order: state.history.length + 1,
+    guess,
+    a,
+    b,
+    isSolved: a === 4,
+  };
 
-  setMessage(`已${noteSet.has(value) ? "加入" : "移除"} ${value} 的筆記。`);
-  renderBoard();
-}
-
-function placeValue(value) {
-  if (!state.selected) {
-    setMessage("先點一格，再輸入數字。");
-    return;
-  }
-
-  const { row, col } = state.selected;
-  if (isFixedCell(row, col)) {
-    setMessage("這格是題目原本就有的數字，不能修改。");
-    return;
-  }
-
-  if (state.notesMode) {
-    toggleNote(value);
-    return;
-  }
-
-  if (state.solution[row][col] !== value) {
-    state.mistakes += 1;
-    refreshStatus();
-    setMessage(`這個位置不是 ${value}，再看看同列、同欄或九宮格。`);
-    flashError(row, col);
-    return;
-  }
-
-  state.board[row][col] = value;
-  clearNotes(row, col);
-  removePlacedValueFromNotes(row, col, value);
-  setMessage(`放入 ${value}，很順。`);
-  renderBoard();
-  checkWin();
-}
-
-function clearSelectedCell() {
-  if (!state.selected) {
-    setMessage("先選一格再清除。");
-    return;
-  }
-
-  const { row, col } = state.selected;
-  if (isFixedCell(row, col)) {
-    setMessage("這格不能清除，因為它是題目提供的數字。");
-    return;
-  }
-
-  state.board[row][col] = 0;
-  clearNotes(row, col);
-  renderBoard();
-  setMessage("已清除這一格。");
-}
-
-function resetBoard() {
-  state.board = cloneBoard(state.puzzle);
-  state.notes = createEmptyNotes();
-  state.selected = null;
-  state.mistakes = 0;
-  state.timerSeconds = 0;
-  state.flashCell = null;
-  state.isComplete = false;
-  hideCelebration();
-  startTimer();
+  state.history.push(entry);
+  guessInput.value = "";
+  renderHistory();
   refreshStatus();
-  renderBoard();
-  setMessage("這盤重新開始，慢慢解也沒關係。");
-}
 
-function giveHint() {
-  const empties = [];
-
-  for (let row = 0; row < 9; row += 1) {
-    for (let col = 0; col < 9; col += 1) {
-      if (state.board[row][col] === 0) {
-        empties.push({ row, col });
-      }
-    }
-  }
-
-  if (empties.length === 0) {
-    checkWin();
+  if (entry.isSolved) {
+    handleSolvedGuess();
     return;
   }
 
-  const target = state.selected &&
-    state.board[state.selected.row][state.selected.col] === 0
-    ? state.selected
-    : empties[Math.floor(Math.random() * empties.length)];
-
-  const answer = state.solution[target.row][target.col];
-  state.board[target.row][target.col] = answer;
-  clearNotes(target.row, target.col);
-  removePlacedValueFromNotes(target.row, target.col, answer);
-  state.selected = target;
-  renderBoard();
-  setMessage(`提示來了：這格可以放 ${answer}。`);
-  checkWin();
+  setMessage(`這次是 ${a}A${b}B，再試一組更接近的。`);
 }
 
-function checkBoardProgress() {
-  let filled = 0;
-  let remaining = 0;
-
-  for (let row = 0; row < 9; row += 1) {
-    for (let col = 0; col < 9; col += 1) {
-      if (state.board[row][col] === 0) {
-        remaining += 1;
-      } else {
-        filled += 1;
-      }
-    }
-  }
-
-  if (remaining === 0) {
-    checkWin();
-    return;
-  }
-
-  setMessage(`目前已填 ${filled} 格，還有 ${remaining} 格等你完成。`);
-}
-
-function solveBoard() {
-  state.board = cloneBoard(state.solution);
-  state.notes = createEmptyNotes();
-  state.isComplete = true;
-  hideCelebration();
-  renderBoard();
-  clearTimer();
-  setMessage("已經幫你展開完整答案，也可以直接開一盤新的。");
-}
-
-function startNewGame(difficultyKey = state.difficulty) {
-  state.difficulty = difficultyKey;
-  state.notesMode = false;
-  state.selected = null;
-  state.mistakes = 0;
+function startNewGame() {
+  state.answer = generateAnswer();
+  state.history = [];
   state.timerSeconds = 0;
-  state.flashCell = null;
-  state.isComplete = false;
+  state.isSolved = false;
 
-  const { puzzle, solution } = buildGame(difficultyKey);
-  state.puzzle = puzzle;
-  state.solution = solution;
-  state.board = cloneBoard(puzzle);
-  state.notes = createEmptyNotes();
   hideCelebration();
-
-  document.querySelectorAll("[data-difficulty]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.difficulty === difficultyKey);
-  });
-
-  startTimer();
+  answerMaskElement.textContent = "答案保密中";
+  guessInput.value = "";
+  renderHistory();
   refreshStatus();
-  renderBoard();
-  setMessage("新的一盤準備好了，從你最想解的地方開始。");
+  setMessage("新的一局開始了，先猜一組四位數。");
+  startTimer();
 }
 
-boardElement.addEventListener("click", (event) => {
-  const button = event.target.closest(".cell");
-  if (!button) {
-    return;
-  }
-
-  selectCell(Number(button.dataset.row), Number(button.dataset.col));
+document.getElementById("guess-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitGuess();
 });
 
-document.getElementById("number-pad").addEventListener("click", (event) => {
-  const button = event.target.closest("button");
-  if (!button) {
-    return;
-  }
-
-  if (button.dataset.action === "clear") {
-    clearSelectedCell();
-    return;
-  }
-
-  placeValue(Number(button.dataset.number));
+document.getElementById("new-game").addEventListener("click", startNewGame);
+document.getElementById("show-answer").addEventListener("click", () => {
+  revealAnswer();
+  setMessage(`答案是 ${state.answer.join("")}。想再挑戰可以直接開新遊戲。`);
 });
-
-document.getElementById("difficulty-buttons").addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-difficulty]");
-  if (!button) {
-    return;
-  }
-
-  startNewGame(button.dataset.difficulty);
+document.getElementById("clear-input").addEventListener("click", () => {
+  guessInput.value = "";
+  guessInput.focus();
 });
+document.getElementById("close-celebration").addEventListener("click", hideCelebration);
+document.getElementById("celebration-new-game").addEventListener("click", startNewGame);
 
-document.getElementById("new-game").addEventListener("click", () => {
-  startNewGame(state.difficulty);
-});
-
-document.getElementById("reset-board").addEventListener("click", resetBoard);
-document.getElementById("hint").addEventListener("click", giveHint);
-document.getElementById("check-board").addEventListener("click", checkBoardProgress);
-document.getElementById("solve-board").addEventListener("click", solveBoard);
-closeCelebrationButton.addEventListener("click", hideCelebration);
-celebrationNewGameButton.addEventListener("click", () => {
-  startNewGame(state.difficulty);
-});
 celebrationModal.addEventListener("click", (event) => {
   if (event.target === celebrationModal) {
     hideCelebration();
   }
 });
 
-notesModeButton.addEventListener("click", () => {
-  state.notesMode = !state.notesMode;
-  refreshStatus();
-  setMessage(
-    state.notesMode
-      ? "筆記模式已開啟，現在輸入數字會寫成小筆記。"
-      : "筆記模式已關閉，現在輸入數字會直接填入格子。"
-  );
+guessInput.addEventListener("input", () => {
+  guessInput.value = guessInput.value.replace(/\D/g, "").slice(0, 4);
 });
 
 window.addEventListener("keydown", (event) => {
@@ -651,40 +276,10 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
-  if (event.key >= "1" && event.key <= "9") {
-    placeValue(Number(event.key));
+  if (event.key === "Enter" && document.activeElement !== guessInput) {
+    event.preventDefault();
+    submitGuess();
   }
-
-  if (event.key === "Backspace" || event.key === "Delete" || event.key === "0") {
-    clearSelectedCell();
-  }
-
-  if (event.key.toLowerCase() === "n") {
-    state.notesMode = !state.notesMode;
-    refreshStatus();
-  }
-
-  if (!state.selected) {
-    return;
-  }
-
-  const moves = {
-    ArrowUp: [-1, 0],
-    ArrowDown: [1, 0],
-    ArrowLeft: [0, -1],
-    ArrowRight: [0, 1],
-  };
-
-  const move = moves[event.key];
-  if (!move) {
-    return;
-  }
-
-  event.preventDefault();
-  const nextRow = Math.min(8, Math.max(0, state.selected.row + move[0]));
-  const nextCol = Math.min(8, Math.max(0, state.selected.col + move[1]));
-  selectCell(nextRow, nextCol);
 });
 
-startNewGame("easy");
-showCelebrationPreview();
+startNewGame();
