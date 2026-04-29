@@ -1,64 +1,177 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>草莓 1A2B 猜數字</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="page-shell">
-    <div class="background-orb orb-left"></div>
-    <div class="background-orb orb-right"></div>
-    
-    <main class="game-card">
-      <header class="hero">
-        <p class="eyebrow">Classic Game</p>
-        <h1>草莓 1A2B</h1>
-        <p class="hero-copy">猜出 4 個不重複的數字。A 表示數字對且位置對，B 表示數字對但位置錯。</p>
-      </header>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>草莓數獨樂園</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="background-orb orb-left"></div>
+      <div class="background-orb orb-right"></div>
 
-      <div class="status-strip">
-        <div class="status-pill">
-          <span>猜測次數</span>
-          <strong id="attempts">0</strong>
-        </div>
-        <div class="message-card">
-          <p id="message">遊戲已準備好，請輸入你的第一個猜測！</p>
-        </div>
-      </div>
+      <main class="game-card">
+        <section class="hero">
+          <p class="eyebrow">Pink Sudoku</p>
+          <h1>草莓數獨樂園</h1>
+          <p class="hero-copy">
+            一邊解題，一邊待在草莓奶霜色的小宇宙裡。選難度、點格子、輸入數字，就可以開始玩。
+          </p>
+        </section>
 
-      <div class="play-area">
-        <div class="input-section">
-          <input type="text" id="guess-input" maxlength="4" placeholder="輸入4個不重複數字" autocomplete="off">
-          <div class="button-row">
-            <button id="submit-btn" class="pill-button active">送出猜測</button>
-            <button id="restart-btn" class="pill-button">重新開始</button>
+        <nav class="page-links" aria-label="遊戲切換">
+          <a class="page-link active" href="./index.html" aria-current="page">玩數獨</a>
+          <a class="page-link" href="./1a2b/index.html">玩 1A2B</a>
+        </nav>
+
+        <section class="status-strip">
+          <div class="status-pill">
+            <span>難度</span>
+            <strong id="difficulty-label">甜甜簡單</strong>
           </div>
-        </div>
-
-        <div class="history-section">
-          <div class="board-frame">
-            <ul id="history-list" class="history-list">
-              <!-- 猜測紀錄會產生在這裡 -->
-            </ul>
+          <div class="status-pill">
+            <span>時間</span>
+            <strong id="timer">00:00</strong>
           </div>
-        </div>
-      </div>
-    </main>
+          <div class="status-pill">
+            <span>錯誤</span>
+            <strong id="mistakes">0</strong>
+          </div>
+        </section>
 
-    <!-- 慶祝彈出視窗 -->
-    <div id="celebration-modal" class="celebration-modal" aria-hidden="true">
-      <div class="celebration-dialog">
-        <button id="close-celebration" class="modal-close">×</button>
-        <p class="celebration-badge">VICTORY!</p>
-        <h2>4A0B 答對了！</h2>
-        <p id="celebration-copy" class="celebration-copy">太厲害了，送你一塊草莓蛋糕！</p>
-        <button id="celebration-new-game" class="pill-button active celebration-button">再來一局</button>
+        <section class="toolbar">
+          <div class="button-row difficulty-row" id="difficulty-buttons">
+            <button class="pill-button active" data-difficulty="easy">甜甜簡單</button>
+            <button class="pill-button" data-difficulty="medium">莓果普通</button>
+            <button class="pill-button" data-difficulty="hard">櫻花挑戰</button>
+          </div>
+
+          <div class="button-row action-row">
+            <button class="soft-button" id="new-game">新遊戲</button>
+            <button class="soft-button" id="reset-board">重來</button>
+            <button class="soft-button" id="hint">提示</button>
+            <button class="soft-button" id="check-board">檢查</button>
+            <button class="soft-button" id="solve-board">解答</button>
+            <button class="soft-button toggle-button" id="notes-mode" aria-pressed="false">
+              筆記模式
+            </button>
+          </div>
+        </section>
+
+        <section class="play-area">
+          <div class="board-wrap">
+            <div class="board-frame">
+              <div class="sudoku-board" id="sudoku-board" aria-label="數獨棋盤"></div>
+            </div>
+          </div>
+
+          <aside class="side-panel">
+            <div class="message-card">
+              <h2>遊玩提示</h2>
+              <p id="message">
+                先選一格，再按鍵盤數字或下方數字鈕。開啟筆記模式後，可以在格子裡留下小提醒。
+              </p>
+            </div>
+
+            <div class="numpad-card">
+              <h2>數字輸入</h2>
+              <div class="number-pad" id="number-pad">
+                <button class="number-button" data-number="1">1</button>
+                <button class="number-button" data-number="2">2</button>
+                <button class="number-button" data-number="3">3</button>
+                <button class="number-button" data-number="4">4</button>
+                <button class="number-button" data-number="5">5</button>
+                <button class="number-button" data-number="6">6</button>
+                <button class="number-button" data-number="7">7</button>
+                <button class="number-button" data-number="8">8</button>
+                <button class="number-button" data-number="9">9</button>
+                <button class="number-button clear-button" data-action="clear">清除</button>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <div class="celebration-modal" id="celebration-modal" aria-hidden="true">
+      <div
+        class="celebration-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="celebration-title"
+      >
+        <button class="modal-close" id="close-celebration" aria-label="關閉完成視窗">
+          ×
+        </button>
+
+        <div class="celebration-sparkles" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="cake-display" aria-hidden="true">
+          <svg class="cake-svg" viewBox="0 0 220 170">
+            <ellipse cx="110" cy="148" rx="86" ry="15" fill="#f7bad0" />
+            <path
+              d="M62 84C62 70 73 58 87 58H133C147 58 158 70 158 84V115C158 129 147 140 133 140H87C73 140 62 129 62 115V84Z"
+              fill="#ffd6e4"
+            />
+            <path
+              d="M74 97C74 92 78 88 83 88H137C142 88 146 92 146 97V114C146 119 142 123 137 123H83C78 123 74 119 74 114V97Z"
+              fill="#fff0a8"
+            />
+            <path
+              d="M62 85C66 78 71 72 76 72C81 72 84 78 89 78C95 78 97 71 103 71C108 71 111 79 117 79C123 79 126 71 132 71C138 71 141 78 146 78C151 78 154 73 158 67V84H62V85Z"
+              fill="#fff9fd"
+            />
+            <path
+              d="M74 123H146V131C146 135 143 138 139 138H81C77 138 74 135 74 131V123Z"
+              fill="#ffb7cc"
+            />
+            <g>
+              <ellipse cx="81" cy="70" rx="12" ry="11" fill="#ff6b98" />
+              <path d="M81 58C77 56 74 54 72 50C77 50 80 52 82 55C84 52 87 50 92 50C90 54 87 56 81 58Z" fill="#7cbf73" />
+              <circle cx="77" cy="69" r="1.4" fill="#fff5b8" />
+              <circle cx="83" cy="66" r="1.4" fill="#fff5b8" />
+              <circle cx="85" cy="71" r="1.4" fill="#fff5b8" />
+            </g>
+            <g>
+              <ellipse cx="110" cy="58" rx="14" ry="13" fill="#ff6b98" />
+              <path d="M110 45C105 42 102 39 100 34C105 34 109 36 111 40C114 36 118 34 123 34C120 39 117 42 110 45Z" fill="#7cbf73" />
+              <circle cx="106" cy="57" r="1.5" fill="#fff5b8" />
+              <circle cx="113" cy="54" r="1.5" fill="#fff5b8" />
+              <circle cx="115" cy="61" r="1.5" fill="#fff5b8" />
+            </g>
+            <g>
+              <ellipse cx="139" cy="70" rx="12" ry="11" fill="#ff6b98" />
+              <path d="M139 58C135 56 132 54 130 50C135 50 138 52 140 55C142 52 145 50 150 50C148 54 145 56 139 58Z" fill="#7cbf73" />
+              <circle cx="135" cy="69" r="1.4" fill="#fff5b8" />
+              <circle cx="141" cy="66" r="1.4" fill="#fff5b8" />
+              <circle cx="143" cy="71" r="1.4" fill="#fff5b8" />
+            </g>
+            <path
+              d="M50 143C63 138 75 135 92 134C102 133 118 133 129 134C146 135 160 138 170 143"
+              fill="none"
+              stroke="#fff9fd"
+              stroke-linecap="round"
+              stroke-width="5"
+            />
+          </svg>
+        </div>
+
+        <p class="celebration-badge">Sweet Reward</p>
+        <h2 id="celebration-title">大功告成</h2>
+        <p class="celebration-copy" id="celebration-copy">
+          你把這盤草莓數獨漂亮完成了。
+        </p>
+        <button class="soft-button celebration-button" id="celebration-new-game">
+          再玩一局
+        </button>
       </div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
