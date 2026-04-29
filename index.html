@@ -12,14 +12,6 @@
     <div class="background-orb orb-right"></div>
 
     <main class="game-card">
-      
-      <!-- 這裡就是連往 1A2B 的按鈕！ -->
-      <nav class="page-links" style="margin-top: 0; margin-bottom: 24px;">
-        <a href="./1a2b/" class="page-link">
-          🎮 點我切換遊戲：草莓 1A2B
-        </a>
-      </nav>
-
       <!-- 狀態列 (難度、時間、錯誤) -->
       <div class="status-strip">
         <div class="status-pill">
@@ -95,12 +87,19 @@
         </div>
         <div class="cake-display">
           <svg class="cake-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- 盤子 -->
             <ellipse cx="60" cy="100" rx="45" ry="10" fill="#ffd6e6"/>
+            <!-- 蛋糕體 -->
             <path d="M25 60 L95 60 L90 95 L30 95 Z" fill="#fff4f8" stroke="#f1a9c2" stroke-width="2"/>
+            <!-- 夾層果醬 -->
             <path d="M28 75 L92 75" stroke="#ef6ea4" stroke-width="4" stroke-linecap="round"/>
+            <!-- 頂部鮮奶油 -->
             <path d="M20 60 Q 30 50 40 60 Q 50 50 60 60 Q 70 50 80 60 Q 90 50 100 60 Q 95 70 80 70 Q 60 70 40 70 Q 25 70 20 60" fill="#ffffff" stroke="#f1a9c2" stroke-width="2"/>
+            <!-- 大草莓 -->
             <path d="M50 45 C 50 25, 70 25, 70 45 C 70 60, 60 65, 60 65 C 60 65, 50 60, 50 45 Z" fill="#ef6ea4"/>
+            <!-- 草莓葉子 -->
             <path d="M55 35 Q 60 25 65 35 Q 60 30 55 35" fill="#9c6581"/>
+            <!-- 草莓籽 -->
             <circle cx="60" cy="45" r="1" fill="#fff"/>
             <circle cx="55" cy="50" r="1" fill="#fff"/>
             <circle cx="65" cy="50" r="1" fill="#fff"/>
