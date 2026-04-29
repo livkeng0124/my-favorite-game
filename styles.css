@@ -120,6 +120,36 @@ button {
   margin-top: 24px;
 }
 
+.page-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: inset 0 0 0 1px rgba(219, 127, 165, 0.24);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.page-link.active {
+  background: linear-gradient(135deg, #ff90bb 0%, #ef6ea4 100%);
+  color: white;
+  box-shadow: 0 12px 24px rgba(218, 92, 145, 0.28);
+}
+
 .status-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -204,7 +234,8 @@ button {
 
 .pill-button:hover,
 .soft-button:hover,
-.number-button:hover {
+.number-button:hover,
+.page-link:hover {
   transform: translateY(-1px);
 }
 
